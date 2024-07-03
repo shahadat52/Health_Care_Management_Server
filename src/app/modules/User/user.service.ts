@@ -15,12 +15,13 @@ const createUserInDB = async (data: any) => {
                 name: data.user.name,
                 email: data.user.email,
                 password: hashPassword,
-                role: UserRole.SUPER_ADMIN
+                role: UserRole.ADMIN
             }
         });
 
         const createUser = await transactionFn.admin.create({
             data: {
+                name: data.user.name,
                 email: data.user.email,
                 contractNumber: data.user.contractNumber
 

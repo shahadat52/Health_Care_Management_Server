@@ -25,6 +25,7 @@ model User {
 model Admin {
   id             String   @id @default(uuid())
   email          String   @unique
+  name           String
   user           User     @relation(fields: [email], references: [email])
   profilePhoto   String?
   contractNumber String

@@ -3,38 +3,38 @@ import { userServices } from "./user.service";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 
-// const createUser = catchAsync(async (req: Request, res: Response) => {
-//     const data = req.body;
-//     const result = await userServices.createUserInDB(data)
+const createUser = catchAsync(async (req: Request, res: Response) => {
+    const data = req.body;
+    const result = await userServices.createUserInDB(data)
 
-//     sendResponse(res, {
-//         statusCode: 500,
-//         success: true,
-//         message: 'User is created successfully',
-//         data: result,
-//     })
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: 'User is created successfully',
+        data: result,
+    })
 
-// });
+});
 
-const createUser = async (req: Request, res: Response) => {
-    try {
-        const data = req.body;
-        const result = await userServices.createUserInDB(data)
+// const createUser = async (req: Request, res: Response) => {
+//     try {
+//         const data = req.body;
+//         const result = await userServices.createUserInDB(data)
 
-        res.status(200).json({
-            statusCode: 500,
-            success: true,
-            message: 'User is created successfully',
-        })
-    } catch (error) {
-        res.status(500).json({
-            statusCode: 500,
-            success: true,
-            message: 'Failed to create user',
-            error
-        })
-    }
-}
+//         res.status(200).json({
+//             statusCode: 500,
+//             success: true,
+//             message: 'User is created successfully',
+//         })
+//     } catch (error) {
+//         res.status(500).json({
+//             statusCode: 500,
+//             success: true,
+//             message: 'Failed to create user',
+//             error
+//         })
+//     }
+// }
 
 
 export const userControllers = {
