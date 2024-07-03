@@ -1,1 +1,1 @@
-export const searchAbleFields = ['name', 'email']
+export const searchAbleFields = ['name', 'email', 'contractNumber']
