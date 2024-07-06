@@ -19,7 +19,7 @@ const createUserInDB = async (data: any) => {
             }
         });
 
-        const createUser = await transactionFn.admin.create({
+        await transactionFn.admin.create({
             data: {
                 name: data.user.name,
                 email: data.user.email,
@@ -28,10 +28,13 @@ const createUserInDB = async (data: any) => {
             }
         })
 
-        return createAdmin
+        return {
+            data: createAdmin
+        }
     })
-    console.log({ result });
-    return result
+    return {
+        data: result
+    }
 }
 
 export const userServices = {

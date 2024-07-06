@@ -26,7 +26,7 @@ model Admin {
   id             String   @id @default(uuid())
   email          String   @unique
   name           String
-  user           User     @relation(fields: [email], references: [email])
+  user           User     @relation(fields: [email], references: [email], onDelete: Cascade)
   profilePhoto   String?
   contractNumber String
   isDeleted      Boolean  @default(false)
@@ -46,4 +46,5 @@ enum UserRole {
 enum UserStatus {
   ACTIVE
   BLOCKED
+  DELETED
 }

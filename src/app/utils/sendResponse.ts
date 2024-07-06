@@ -1,17 +1,24 @@
+import { count } from "console";
 import { Response } from "express"
 
 type TResponse<T> = {
     statusCode: number;
     success: boolean;
     message?: string;
-    data: T;
+    meta?: {
+        page: number,
+        limit: number,
+        total: number
+    }
+    data: T | null | undefined;
 }
 const sendResponse = <T>(res: Response, data: TResponse<T>) => {
     res.status(data.statusCode).json({
         statusCode: data?.statusCode,
         success: data?.success,
         message: data?.message,
-        data: data.data
+        meta: data.meta || null || undefined,
+        data: data.data || null || undefined
     })
 }
 
