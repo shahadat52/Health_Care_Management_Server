@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from "express";
+import { StatusCodes } from "http-status-codes";
 
 const globalErrorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
     if (err) {
-        console.log(err);
-        res.status(500).json({
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
             success: false,
-            message: 'Something went wrong' || err.message
+            message: err.message || 'Something went wrong'
         })
     } else {
         next()

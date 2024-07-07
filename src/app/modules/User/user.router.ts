@@ -7,4 +7,4 @@ const router = express.Router()
 router.post('/', userControllers.createUser)
 
 
-export const userRouters = router
+export const userRoutes = router
