@@ -5,5 +5,6 @@ dotenv.config({ path: path.join(process.cwd(), '.env') })
 
 export default {
     // node_env: process.env.
-    secret_key: process.env.SECRET_KEY
+    secret_key: process.env.SECRET_KEY,
+    salt_round: process.env.SALT_ROUND
 }
