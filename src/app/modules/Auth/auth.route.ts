@@ -18,5 +18,15 @@ router.put(
     auth(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.DOCTOR, UserRole.PATIENT),
     authCollections.changePassword
 );
+router.get(
+    '/forget-password',
+    authCollections.forgetPassword
+);
+router.put(
+    '/reset-password',
+    authCollections.resetPassword
+);
 
 export const authRoutes = router
+
+

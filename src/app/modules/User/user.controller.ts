@@ -3,14 +3,25 @@ import { userServices } from "./user.service";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 
-const createUser = catchAsync(async (req: Request, res: Response) => {
-    const data = req.body;
-    const result = await userServices.createUserInDB(data)
+const createAdmin = catchAsync(async (req: Request, res: Response) => {
+    const result = await userServices.createAdminInDB(req.file, req.body)
 
     sendResponse(res, {
         statusCode: 200,
         success: true,
         message: 'User is created successfully',
+        data: result?.data,
+    })
+
+});
+
+const createDoctor = catchAsync(async (req: Request, res: Response) => {
+    const result = await userServices.createDoctorInDB(req.file, req.body)
+
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: 'Doctor is created successfully',
         data: result?.data,
     })
 
@@ -38,5 +49,6 @@ const createUser = catchAsync(async (req: Request, res: Response) => {
 
 
 export const userControllers = {
-    createUser
+    createAdmin,
+    createDoctor
 }

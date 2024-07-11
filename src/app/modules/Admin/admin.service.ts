@@ -78,7 +78,6 @@ const updateDataByIdInDB = async (id: string, data: Partial<Admin>) => {
         },
         data: data
     })
-    console.log(result);
     return {
         data: result
     }
@@ -118,7 +117,6 @@ const softDeleteAdminFromDB = async (id: string) => {
                 isDeleted: true
             }
         });
-        console.log(deleteAdmin);
         const deleteUser = await transactionFn.user.update({
             where: {
                 email: deleteAdmin.email

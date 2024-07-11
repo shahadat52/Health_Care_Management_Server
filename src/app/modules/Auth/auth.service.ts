@@ -7,6 +7,7 @@ import { createToken, verifyToken } from "./auth.utils";
 import { checkServerIdentity } from "tls";
 import AppError from "../../errors/AppError";
 import { StatusCodes } from "http-status-codes";
+import { sendEmail } from "../../utils/sendEmaill";
 
 const prisma = new PrismaClient();
 const loginInDB = async (payload: { email: string, password: string }) => {
@@ -47,7 +48,6 @@ const refreshToken = async (token: string) => {
         role: isUserExists?.role
     }
     const accessToken = createToken(payload, (config.secret_key as string), { expiresIn: '1h' });
-    console.log(accessToken);
     return {
         accessToken
     }
@@ -61,7 +61,8 @@ const changePasswordInDB = async (payload: { oldPass: string, newPass: string },
      */
     const user = await prisma.user.findUniqueOrThrow({
         where: {
-            email: decodeData.email
+            email: decodeData.email,
+            status: UserStatus.ACTIVE
         }
     });
     const isPasswordValid = await bcrypt.compareSync(payload.oldPass, user.password)
@@ -74,15 +75,70 @@ const changePasswordInDB = async (payload: { oldPass: string, newPass: string },
             email: user.email
         },
         data: {
-            password: hashPassword
+            password: hashPassword,
+            needPasswordChange: false
         }
     });
     return {
         changePassword
     }
 }
+
+const forgetPassword = async (payload: { email: string }) => {
+    const isUserExists = await prisma.user.findUniqueOrThrow({
+        where: {
+            email: payload.email,
+            status: UserStatus.ACTIVE
+        }
+    });
+
+    const payloadData = { email: isUserExists.email, role: isUserExists.role } as JwtPayload
+
+    const token = createToken(payloadData, config.reset_secret_key as string, { expiresIn: config.reset_expire_in });
+
+    const html = config.reset_pass_link + `?userId=${isUserExists.id}&token=${token}`
+    sendEmail(isUserExists.email,
+        `<div>
+        <p>Dear User</p>
+        <p>
+        Your password reset link 
+        <a href=${html}>
+        <button>Reset password<button/>
+        <a/>
+        <p/>
+        </div>
+        `
+    )
+
+};
+
+const resetPassword = async (token: string, payload: { id: string, password: string }) => {
+    const isUserExists = await prisma.user.findUniqueOrThrow({
+        where: {
+            id: payload.id,
+            status: UserStatus.ACTIVE
+        }
+    });
+
+    const decode = verifyToken(token, config.reset_secret_key as string)
+    if (!decode) { throw new AppError(StatusCodes.FORBIDDEN, 'Forbidden access') };
+    const hashPassword = await bcrypt.hashSync(payload.password, Number(config.salt_round));
+    const result = await prisma.user.update({
+        where: {
+            id: payload?.id,
+            status: UserStatus.ACTIVE
+        },
+        data: {
+            password: hashPassword,
+            needPasswordChange: false
+        }
+    })
+    return result
+}
 export const authServices = {
     loginInDB,
     refreshToken,
-    changePasswordInDB
+    changePasswordInDB,
+    forgetPassword,
+    resetPassword
 }

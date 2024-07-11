@@ -2,14 +2,37 @@ import express from "express";
 import { userControllers } from "./user.controller";
 import auth from "../../middleware/auth";
 import { UserRole } from "@prisma/client";
+import validateRequest from "../../middleware/validateRequest";
+import { userValidations } from "./user.validation";
+import { upload } from "../../utils/fileUploder";
 
 
 const router = express.Router()
 
 router.post(
-    '/',
+    '/create-admin',
+    upload.single('file'),
+    (req, res, next) => {
+        const data = JSON.parse(req?.body?.data);
+        req.body = data
+        next()
+    },
+    validateRequest(userValidations.createAdminValidationSchema),
     auth(UserRole.ADMIN, UserRole.SUPER_ADMIN),
-    userControllers.createUser
+    userControllers.createAdmin
+);
+
+router.post(
+    '/create-doctor',
+    upload.single('file'),
+    (req, res, next) => {
+        const data = JSON.parse(req?.body?.data);
+        req.body = data
+        next()
+    },
+    validateRequest(userValidations.createDoctorValidationSchema),
+    auth(UserRole.ADMIN, UserRole.SUPER_ADMIN),
+    userControllers.createDoctor
 );
 
 

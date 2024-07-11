@@ -1,16 +1,25 @@
-import { Request, RequestHandler, Response } from "express";
-import { NextFunction } from "express-serve-static-core";
+// import { Request, RequestHandler, Response } from "express";
+// import { NextFunction } from "express-serve-static-core";
+
+import { error } from "console"
+import { NextFunction, Request, Response } from "express"
+import { RequestHandler } from "express-serve-static-core"
+
+// const catchAsync = (fn: RequestHandler) => {
+//     return async (req: Request, res: Response, next: NextFunction) => {
+//         try {
+//             await fn(req, res, next)
+//         } catch (error) {
+//             next(error)
+//         }
+//     }
+// }
 
 const catchAsync = (fn: RequestHandler) => {
-    return async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            await fn(req, res, next)
-        } catch (error) {
-            next(error)
-        }
+    return (req: Request, res: Response, next: NextFunction) => {
+        Promise.resolve(fn(req, res, next)).catch((error) => next(error))
     }
 }
-
 
 /**
 import { NextFunction, Request, RequestHandler, Response } from "express";

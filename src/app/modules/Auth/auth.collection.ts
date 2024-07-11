@@ -44,11 +44,36 @@ const changePassword: RequestHandler = catchAsync(async (req, res) => {
         message: 'Password changed successfully',
         data: result
     })
+});
+
+const forgetPassword: RequestHandler = catchAsync(async (req, res) => {
+    const result = await authServices.forgetPassword(req.body)
+
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: 'Password reset Link send successfully',
+        data: result
+    })
+})
+
+const resetPassword: RequestHandler = catchAsync(async (req, res) => {
+    const token = req.headers.authorization || ''
+    const result = await authServices.resetPassword(token, req.body)
+
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: 'Password reset successfully',
+        data: ''
+    })
 })
 
 
 export const authCollections = {
     login,
     refreshToken,
-    changePassword
+    changePassword,
+    forgetPassword,
+    resetPassword
 }
