@@ -1,8 +1,9 @@
 const filterQuery = (obj: any, fieldsArr: string[]) => {
+    // console.log({ obj, fieldsArr });
     const filterObject = Object.keys(obj).filter(key => fieldsArr.includes(key)).reduce((filterObj, key) => {
         filterObj[key] = obj[key]
         return filterObj
-    }, {} as any)
+    }, {} as any);
     return filterObject
 };
 

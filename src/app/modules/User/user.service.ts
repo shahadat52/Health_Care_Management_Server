@@ -1,9 +1,8 @@
 import { Prisma, PrismaClient, UserRole, UserStatus } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { sendImageToCloudinary } from "../../utils/fileUploder";
-import { TCloudinaryRes } from "../../interface/file";
 import calculatePaginationAndSorting from "../../utils/calculatePaginationAndSorting";
-import { searchAbleFields } from "../../constants/admin.constant";
+import { userSearchAbleFields } from "./user.constant";
 
 
 const saltRounds = 10;
@@ -112,12 +111,12 @@ const getAllUsersFromDB = async (params: any, option: any) => {
 
     const { searchTerm, ...searchFields } = params
     const { page, limit, sortBy, sortOrder } = calculatePaginationAndSorting(option)
-    const whereConditions: Prisma.UserWhereInput[] = [];
+    const andConditions: Prisma.UserWhereInput[] = [];
 
 
     if (params.searchTerm) {
-        whereConditions.push({
-            OR: searchAbleFields.map(field => ({
+        andConditions.push({
+            OR: userSearchAbleFields.map(field => ({
                 [field]: {
                     contains: params.searchTerm,
                     mode: 'insensitive'
@@ -126,25 +125,28 @@ const getAllUsersFromDB = async (params: any, option: any) => {
         })
     };
 
+
+    console.log({ searchFields });
     // multiple fields exact match korate
     if (Object.keys(searchFields).length > 0) {
-        whereConditions.push({
+        andConditions.push({
             AND: Object.keys(searchFields).map(key => ({
                 [key]: {
-                    equals: searchFields[key],
-                    mode: 'insensitive'
+                    equals: searchFields[key]
                 }
             }))
         })
     }
     // console.dir(andConditions, { depth: Infinity });
-    whereConditions.push({
+    andConditions.push({
         status: UserStatus.ACTIVE
     })
+    console.log({ andConditions });
     const total = await prisma.user.count();
-    const makeObject: Prisma.UserWhereInput = { AND: whereConditions }
+    const whereConditions: Prisma.UserWhereInput = andConditions.length > 0 ? { AND: andConditions } : {}
+    console.log(JSON.stringify(whereConditions));
     const result = await prisma.user.findMany({
-        where: makeObject,
+        where: whereConditions,
         skip: (page - 1) * limit,
         take: limit,
         orderBy: option.sortBy && option.sortOrder ? { [sortBy]: sortOrder } : { createdAt: 'desc' }

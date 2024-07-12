@@ -3,7 +3,8 @@ import { userServices } from "./user.service";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import filterQuery from "../../utils/filterQuery";
-import { searchAbleFields } from "../../constants/admin.constant";
+import { searchAbleFields } from "../Admin/admin.constant";
+import { userFilterableFields, userSearchAbleFields } from "./user.constant";
 
 const createAdmin = catchAsync(async (req: Request, res: Response) => {
     const result = await userServices.createAdminInDB(req.file, req.body)
@@ -42,9 +43,9 @@ const createPatient = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getAllUsers = catchAsync(async (req, res) => {
-    const filteredQuery = filterQuery(req.query, searchAbleFields);
+    const filteredQuery = filterQuery(req.query, userFilterableFields);
     const option = filterQuery(req.query, ['page', 'limit', 'sortBy', 'sortOrder']);
-
+    console.log({ filteredQuery, option });
     const result = await userServices.getAllUsersFromDB(filteredQuery, option);
     sendResponse(res, {
         statusCode: 200,

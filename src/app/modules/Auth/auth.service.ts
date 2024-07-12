@@ -25,7 +25,7 @@ const loginInDB = async (payload: { email: string, password: string }) => {
     if (!isPasswordValid) {
         throw Error('Wrong Password')
     }
-    const accessToken = createToken(payloadData, (config.secret_key as string), { expiresIn: '1h' })
+    const accessToken = createToken(payloadData, (config.secret_key as string), { expiresIn: '12h' })
     const refreshToken = createToken(payloadData, (config.secret_key as string), { expiresIn: '365d' })
     return {
         accessToken,

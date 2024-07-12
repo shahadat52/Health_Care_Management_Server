@@ -1,1 +1,0 @@
-export const searchAbleFields = ['name', 'email', 'contractNumber']

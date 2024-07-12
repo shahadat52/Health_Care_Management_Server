@@ -2,14 +2,13 @@ import { Request, Response } from "express"
 import { adminServices } from "./admin.service"
 import catchAsync from "../../utils/catchAsync"
 import sendResponse from "../../utils/sendResponse"
-import { searchAbleFields } from "../../constants/admin.constant";
 import filterQuery from "../../utils/filterQuery";
+import { searchTermFields } from "./admin.constant";
 
 const getAdmin = catchAsync(async (req: Request, res: Response) => {
 
-    const filteredQuery = filterQuery(req.query, searchAbleFields)
+    const filteredQuery = filterQuery(req.query, searchTermFields);
     const option = filterQuery(req.query, ['page', 'limit', 'sortBy', 'sortOrder'])
-
     const result = await adminServices.getAdminFromDB(filteredQuery, option)
     sendResponse(res, {
         statusCode: 200,
