@@ -104,7 +104,7 @@ const deleteAdminFromDB = async (email: string) => {
     return {
         data: result
     }
-}
+};
 
 const softDeleteAdminFromDB = async (id: string) => {
     const result = await prisma.$transaction(async (transactionFn) => {
@@ -133,7 +133,7 @@ const softDeleteAdminFromDB = async (id: string) => {
     return {
         data: result
     }
-}
+};
 
 export const adminServices = {
     getAdminFromDB,

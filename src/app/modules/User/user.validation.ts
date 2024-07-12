@@ -20,7 +20,7 @@ const createDoctorValidationSchema = z.object({
         name: z.string({ required_error: "Name is required" }),
         email: z.string({ required_error: "Email is required" }),
         contractNumber: z.string({ required_error: "Contract number is required" }),
-        address: z.string({ required_error: "Address is required" }).optional(),
+        address: z.string().optional(),
         registrationNumber: z.string({ required_error: "Registration Number is required" }),
         experience: z.string({ required_error: "Experience is required" }),
         gender: z.enum([Gender.MALE, Gender.FEMALE]),
@@ -32,7 +32,19 @@ const createDoctorValidationSchema = z.object({
     })
 });
 
+
+const createPatientValidationSchema = z.object({
+    password: z.string({ required_error: "Password is required" }),
+    patient: z.object({
+        name: z.string({ required_error: "Name is required" }),
+        email: z.string({ required_error: "Email is required" }),
+        contractNumber: z.string().optional(),
+        address: z.string().optional(),
+    })
+})
+
 export const userValidations = {
     createAdminValidationSchema,
-    createDoctorValidationSchema
+    createDoctorValidationSchema,
+    createPatientValidationSchema
 }
