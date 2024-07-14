@@ -162,9 +162,33 @@ const getAllUsersFromDB = async (params: any, option: any) => {
     }
 };
 
+const updateStatusInDB = async (id: string, data: any) => {
+    console.log(data);
+    await prisma.user.findUniqueOrThrow({
+        where: {
+            id
+        }
+    });
+
+    const result = await prisma.user.update({
+        where: {
+            id
+        },
+        data: {
+            status: data.status
+        }
+    });
+    return {
+        meta: undefined,
+        data: {}
+    }
+
+}
+
 export const userServices = {
     createAdminInDB,
     createDoctorInDB,
     createPatientInDB,
-    getAllUsersFromDB
+    getAllUsersFromDB,
+    updateStatusInDB
 }

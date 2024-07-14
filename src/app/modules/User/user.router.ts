@@ -17,7 +17,7 @@ router.post(
         req.body = data
         next()
     },
-    validateRequest(userValidations.createAdminValidationSchema),
+    // validateRequest(userValidations.createAdminValidationSchema),
     auth(UserRole.ADMIN, UserRole.SUPER_ADMIN),
     userControllers.createAdmin
 );
@@ -52,6 +52,13 @@ router.get(
     '/',
     auth(UserRole.ADMIN, UserRole.SUPER_ADMIN),
     userControllers.getAllUsers
+);
+
+router.put(
+    '/:id',
+    auth(UserRole.ADMIN, UserRole.SUPER_ADMIN),
+    validateRequest(userValidations.updateStatusValidation),
+    userControllers.updateStatus
 )
 
 
