@@ -59,7 +59,26 @@ router.put(
     auth(UserRole.ADMIN, UserRole.SUPER_ADMIN),
     validateRequest(userValidations.updateStatusValidation),
     userControllers.updateStatus
-)
+);
+
+router.get(
+    '/me',
+    auth(UserRole.ADMIN, UserRole.SUPER_ADMIN),
+    userControllers.getProfile
+);
+
+router.patch(
+    '/update-profile',
+    upload.single('file'),
+    (req, res, next) => {
+        const data = JSON.parse(req?.body?.data);
+        req.body = data
+        next()
+    },
+    // validateRequest(userValidations.createAdminValidationSchema),
+    auth(UserRole.ADMIN, UserRole.SUPER_ADMIN),
+    userControllers.updateProfile
+);
 
 
 export const userRoutes = router

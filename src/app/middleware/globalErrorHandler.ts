@@ -90,16 +90,22 @@ const globalErrorHandler = (err: Error | PrismaClientKnownRequestError, req: Req
             message = simplifyError.message || "Not Found Error",
                 statusCode = StatusCodes.NOT_FOUND,
                 errorSource = simplifyError.errorSource
+        } else if (err instanceof Error) {
+            message = err.message || "Something went",
+                statusCode = StatusCodes.UNAUTHORIZED,
+                errorSource,
+                err
         }
 
 
         res.status(statusCode).json({
-            success: false,
+
+            success: true,
             message,
             statusCode,
             errorSource,
-            err
-            // stack: config.node_env === 'Development' ? err?.stack : null
+            err,
+            stack: config.node_env === 'Development' ? err?.stack : null
 
 
         })
