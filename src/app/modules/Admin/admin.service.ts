@@ -1,8 +1,7 @@
-import { Admin, Prisma, PrismaClient, UserStatus } from "@prisma/client"
+import { Admin, Prisma, UserStatus } from "@prisma/client"
 import calculatePaginationAndSorting from "../../utils/calculatePaginationAndSorting";
 import { searchAbleFields } from "./admin.constant";
-
-const prisma = new PrismaClient();
+import { prisma } from "../../../app";
 
 const getAdminFromDB = async (params: any, option: any) => {
 

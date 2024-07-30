@@ -2,8 +2,8 @@ import { PrismaClient } from "@prisma/client"
 import { UserRole } from "@prisma/client";
 import bcrypt from 'bcrypt'
 import config from "../config";
+import { prisma } from "../../app";
 
-const prisma = new PrismaClient()
 
 const superUser = {
     name: 'Shahadat Hossain',

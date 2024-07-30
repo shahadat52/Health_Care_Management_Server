@@ -1,13 +1,12 @@
-import express, { Application, Request, Response } from "express";
+import express, { Application } from "express";
 import cors from "cors"
-import { userRoutes } from "./app/modules/User/user.router"
 import globalErrorHandler from "./app/middleware/globalErrorHandler";
-import { adminRoutes } from "./app/modules/Admin/admin.route";
 import router from "./app/routes";
 import notFound from "./app/middleware/notFound";
 import cookieParser from 'cookie-parser'
-import { promise } from "zod";
+import { PrismaClient } from "@prisma/client";
 
+export const prisma = new PrismaClient()
 const app: Application = express()
 app.use(cors());
 

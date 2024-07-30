@@ -1,15 +1,13 @@
-import { PrismaClient, UserStatus } from "@prisma/client"
+import { UserStatus } from "@prisma/client"
 import bcrypt from 'bcrypt'
 import jwt, { JwtPayload } from 'jsonwebtoken'
 import config from "../../config";
-import { RequestHandler } from "express";
 import { createToken, verifyToken } from "./auth.utils";
-import { checkServerIdentity } from "tls";
 import AppError from "../../errors/AppError";
 import { StatusCodes } from "http-status-codes";
 import { sendEmail } from "../../utils/sendEmaill";
+import { prisma } from "../../../app";
 
-const prisma = new PrismaClient();
 const loginInDB = async (payload: { email: string, password: string }) => {
     const isUserExists = await prisma.user.findUniqueOrThrow({
         where: {

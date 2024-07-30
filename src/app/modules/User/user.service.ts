@@ -1,15 +1,14 @@
-import { Prisma, PrismaClient, UserRole, UserStatus } from "@prisma/client";
+import { Prisma, UserRole, UserStatus } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { sendImageToCloudinary } from "../../utils/fileUploder";
 import calculatePaginationAndSorting from "../../utils/calculatePaginationAndSorting";
 import { userSearchAbleFields } from "./user.constant";
 import { JwtPayload } from "jsonwebtoken";
-import { date } from "zod";
 import { Request } from "express";
+import { prisma } from "../../../app";
 
 
 const saltRounds = 10;
-const prisma = new PrismaClient()
 
 const createAdminInDB = async (file: any, data: any) => {
     if (file) {
