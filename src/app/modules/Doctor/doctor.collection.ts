@@ -2,9 +2,14 @@ import { RequestHandler } from "express";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import { doctorServices } from "./doctor.service";
+import filterQuery from "../../utils/filterQuery";
+import { userFilterableFields } from "../User/user.constant";
 
 const getAllDoctors: RequestHandler = catchAsync(async (req, res) => {
-    const result = await doctorServices.getAllDoctorsFromDB()
+    const query = req.query
+    const filteredQuery = filterQuery(req.query, userFilterableFields);
+    const option = filterQuery(req.query, ['page', 'limit', 'sortBy', 'sortOrder']);
+    const result = await doctorServices.getAllDoctorsFromDB(filteredQuery, option)
     sendResponse(res, {
         statusCode: 200,
         success: true,

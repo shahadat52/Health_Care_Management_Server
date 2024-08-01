@@ -143,10 +143,9 @@ const getAllUsersFromDB = async (params: any, option: any) => {
     andConditions.push({
         status: UserStatus.ACTIVE
     })
-    console.log({ andConditions });
     const total = await prisma.user.count();
     const whereConditions: Prisma.UserWhereInput = andConditions.length > 0 ? { AND: andConditions } : {}
-    console.log(JSON.stringify(whereConditions));
+    // console.log(JSON.stringify(whereConditions));
     const result = await prisma.user.findMany({
         where: whereConditions,
         skip: (page - 1) * limit,

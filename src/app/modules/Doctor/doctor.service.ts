@@ -1,10 +1,108 @@
 import { date } from "zod";
 import { prisma } from "../../../app"
+import { userSearchAbleFields } from "../User/user.constant";
+import { Prisma } from "@prisma/client";
+import calculatePaginationAndSorting from "../../utils/calculatePaginationAndSorting";
 
-const getAllDoctorsFromDB = async () => {
-    const result = await prisma.doctor.findMany({});
+const getAllDoctorsFromDB = async (params: any, option: any) => {
+    // console.log(query);
+    // const result = await prisma.doctor.findMany({
+    //     where: {
+    //         DoctorSpecialties: {
+    //             some: {
+    //                 specialties: {
+    //                     AND: [
+    //                         {
+    //                             title: {
+    //                                 contains: query.DoctorSpecialties,
+    //                                 mode: 'insensitive'
+    //                             }
+    //                         }
+    //                     ]
+    //                 }
+    //             }
+    //         },
+
+    //     },
+    //     include: {
+    //         DoctorSpecialties: {
+    //             include: {
+    //                 specialties: true
+    //             }
+    //         }
+    //     }
+    // });
+    console.log(params);
+
+    const { searchTerm, specialties, ...searchFields } = params
+    const { page, limit, sortBy, sortOrder } = calculatePaginationAndSorting(option)
+    const andConditions: Prisma.DoctorWhereInput[] = [];
+
+
+    if (params.searchTerm) {
+        andConditions.push({
+            OR: userSearchAbleFields.map(field => ({
+                [field]: {
+                    contains: params.searchTerm,
+                    mode: 'insensitive'
+                }
+            }))
+        })
+    };
+
+
+    console.log({ searchFields });
+    // multiple fields exact match korate
+    if (Object.keys(searchFields).length > 0) {
+        andConditions.push({
+            AND: Object.keys(searchFields).map(key => ({
+                [key]: {
+                    equals: searchFields[key]
+                }
+            }))
+        })
+    }
+    // console.dir(andConditions, { depth: Infinity });
+    if (specialties && specialties.length > 0) {
+        andConditions.push({
+            DoctorSpecialties: {
+                some: {
+                    specialties: {
+                        AND: {
+                            title: {
+                                contains: specialties,
+                                mode: 'insensitive'
+                            }
+                        }
+                    }
+                }
+            }
+
+        })
+    }
+    const total = await prisma.user.count();
+    const whereConditions: Prisma.DoctorWhereInput = andConditions.length > 0 ? { AND: andConditions } : {}
+    // console.log(JSON.stringify(whereConditions));
+    const result = await prisma.doctor.findMany({
+        where: whereConditions,
+        include: {
+            DoctorSpecialties: {
+                include: {
+                    specialties: true
+                }
+            }
+        },
+        skip: (page - 1) * limit,
+        take: limit,
+        orderBy: option.sortBy && option.sortOrder ? { [sortBy]: sortOrder } : { createdAt: 'desc' }
+    });
 
     return {
+        meta: {
+            page,
+            limit,
+            total,
+        },
         data: result
     }
 };

@@ -16,4 +16,9 @@ router.post(
     },
     specialtiesCollections.createSpecialties
 );
+
+router.get(
+    '/',
+    specialtiesCollections.getAllSpecialties
+)
 export const specialtiesRouters = router
